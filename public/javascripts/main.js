@@ -53,6 +53,11 @@ document.addEventListener("DOMContentLoaded", function (event) {
         selectGenre = document.getElementById("select-genre").value;
     });
     
+    // reloads the list
+    $(document).on("pagebeforeshow", "#list", function (event){
+        createList();
+    });
+
     // loads the content from the game array to the details page
     $(document).on("pagebeforeshow", "#details", function (event){
         let localID = localStorage.getItem('id');
