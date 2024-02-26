@@ -11,7 +11,7 @@ let gameObject = function(pName, pDev, pYear, pReview, pGenre){
     this.year = pYear;
     this.review = pReview;
     this.genre = pGenre;
-    this.id = -1;
+    this.id = Math.floor(Math.random() * 1000000);
 }
 
 // examples to be pushed

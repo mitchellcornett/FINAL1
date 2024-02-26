@@ -8,14 +8,12 @@ let gameObject = function(pName, pDev, pYear, pReview, pGenre){
     this.year = pYear;
     this.review = pReview;
     this.genre = pGenre;
-    this.id = -1;
+    this.id = Math.floor(Math.random() * 1000000);
 }
 
 // examples to be pushed
 // gameArray.push(new gameObject("Granblue Fantasy", "Cygames", "2014", "This game is great!", "Role Playing"));
 // gameArray.push(new gameObject("Donkey Kong", "Nintendo", "1981", "A classic!", "Misc."));
-
-
 
 // code runs when dom is loaded
 document.addEventListener("DOMContentLoaded", function (event) {
@@ -52,11 +50,6 @@ document.addEventListener("DOMContentLoaded", function (event) {
     $(document).bind("change", "#select-genre", function (event, ui) {
         selectGenre = document.getElementById("select-genre").value;
     });
-    
-    // reloads the list
-    $(document).on("pagebeforeshow", "#list", function (event){
-        createList();
-    });
 
     // loads the content from the game array to the details page
     $(document).on("pagebeforeshow", "#details", function (event){
@@ -65,20 +58,20 @@ document.addEventListener("DOMContentLoaded", function (event) {
         $.get("/getAllGames", function(data, status){
             gameArray = data;
 
-        // if a user goes straight into this page without something in local storage it will hang, so this is to send them to the home page
-        if (localID === null){
-            document.location.href = "index.html#home"
-        } else {
-            document.getElementById("gameDetailsName").innerHTML = `Title: ${gameArray[localID].name}`
-            document.getElementById("gameDetailsDeveloper").innerHTML = `Developer: ${gameArray[localID].dev}`
-            document.getElementById("gameDetailsYear").innerHTML = `Released: ${gameArray[localID].year}`
-            document.getElementById("gameDetailsGenre").innerHTML = `Genre: ${gameArray[localID].genre}`
-            document.getElementById("gameDetailsReview").innerHTML = `Review: ${gameArray[localID].review}`
-        }
+            let index = gameArray.findIndex(function(x){return x.id.toString() === localID});
+
+            // if a user goes straight into this page without something in local storage it will hang, so this is to send them to the home page
+            if (localID === null){
+                document.location.href = "index.html#home"
+            } else {
+                document.getElementById("gameDetailsName").innerHTML = `Title: ${gameArray[index].name}`
+                document.getElementById("gameDetailsDeveloper").innerHTML = `Developer: ${gameArray[index].dev}`
+                document.getElementById("gameDetailsYear").innerHTML = `Released: ${gameArray[index].year}`
+                document.getElementById("gameDetailsGenre").innerHTML = `Genre: ${gameArray[index].genre}`
+                document.getElementById("gameDetailsReview").innerHTML = `Review: ${gameArray[index].review}`
+            }
         });
     });
-
-    
 
 });
 
@@ -94,8 +87,7 @@ function createList(){
     // for every element in the array, create an li element and append it to the ul
     for (let i = 0; i < gameArray.length; i++){
         let listElement = document.createElement('li');
-        listElement.innerHTML = `${gameArray[i].name} - ${gameArray[i].dev}: ${gameArray[i].year} [${gameArray[i].genre}]`
-        gameArray[i].id = i;
+        listElement.innerHTML = `(${gameArray[i].id}) ${gameArray[i].name} - ${gameArray[i].dev}: ${gameArray[i].year} [${gameArray[i].genre}]`
         listElement.addEventListener('click', function() {
             localStorage.setItem('id', gameArray[i].id);
             document.location.href = "index.html#details"
