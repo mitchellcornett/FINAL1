@@ -32,7 +32,8 @@ document.addEventListener("DOMContentLoaded", function (event) {
     document.getElementById("addButton").addEventListener("click", function(){
         
         // pushes a new game to the game array
-        gameArray.push(new gameObject(gameName.value, gameDev.value, gameYear.value, gameReview.value, selectGenre));
+        let newReview = new gameObject(gameName.value, gameDev.value, gameYear.value, gameReview.value, selectGenre);
+        gameArray.push(newReview);
 
         // clears the values of the forms in the html form
         gameName.value = "";
@@ -43,7 +44,21 @@ document.addEventListener("DOMContentLoaded", function (event) {
         // recreates the list in the list page of the html
         createList();
 
-        document.location.href = "index.html#list";
+        // Send to server
+        $.ajax({
+            url: "/addGame",
+            type: "POST",
+            data: JSON.stringify(newReview),
+            contentType:"application/json; charset=utf-8",
+            success: function (result) {
+                console.log(result);
+                document.location.href = "index.html#list";
+            },
+            error: function (xhr, textStatus, errorThrown) {  
+                alert(`Server could not add review: ` + newReview.name);
+                alert(textStatus + " " + errorThrown);
+            }
+        });
     });
 
     // changes the selectGenre varialbe to whatever the value is of the select-genre tag is in the html
