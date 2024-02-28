@@ -61,6 +61,22 @@ document.addEventListener("DOMContentLoaded", function (event) {
         });
     });
 
+    // called when delete button is pressed
+    document.getElementById("deleteButton").addEventListener("click", function () {
+        let gameID = localStorage.getItem('id');
+        $.ajax({
+            type: "DELETE",
+            url: "/DeleteGame/" +gameID,
+            success: function(result){
+                alert(result);
+            },
+            error: function (xhr, textStatus, errorThrown) { 
+                alert("Server could not delete game with ID " + gameID)
+            } 
+        });
+            
+    });
+
     // changes the selectGenre varialbe to whatever the value is of the select-genre tag is in the html
     $(document).bind("change", "#select-genre", function (event, ui) {
         selectGenre = document.getElementById("select-genre").value;

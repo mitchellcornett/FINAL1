@@ -35,4 +35,29 @@ router.post('/addGame', function(req, res){
   res.status(200).json(newReview);
 });
 
+// deletes a game
+router.delete('/DeleteGame/:ID', (req, res) => {
+  const delID = req.params.ID;
+  let pointer = GetObjectPointer(delID);
+  if(pointer == -1){
+    console.log("not found");
+    return res.status(500).json({
+      status: "error - no such ID"
+    });
+  }
+  else {
+    serverGameArray.splice(pointer, 1);
+    res.send('Movie with ID: ' + delID + ' deleted!');
+}
+});
+
+function GetObjectPointer(whichID){
+  for(i=0; i< serverGameArray.length; i++){
+      if(serverGameArray[i].id == whichID){
+          return i;
+      }
+  }
+  return -1;
+}
+
 module.exports = router;
