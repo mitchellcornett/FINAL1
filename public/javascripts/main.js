@@ -41,9 +41,6 @@ document.addEventListener("DOMContentLoaded", function (event) {
         gameYear.value = "";
         gameReview.value = "";
 
-        // recreates the list in the list page of the html
-        createList();
-
         // Send to server
         $.ajax({
             url: "/addGame",
@@ -59,6 +56,9 @@ document.addEventListener("DOMContentLoaded", function (event) {
                 alert(textStatus + " " + errorThrown);
             }
         });
+
+        // recreates the list in the list page of the html
+        createList();
     });
 
     // called when delete button is pressed
