@@ -1,5 +1,6 @@
-var express = require('express');
-var router = express.Router();
+let express = require('express');
+let router = express.Router();
+let fs = require("fs");
 
 // array that holds the games
 let serverGameArray = [];
@@ -14,9 +15,38 @@ let gameObject = function(pName, pDev, pYear, pReview, pGenre){
     this.id = Math.floor(Math.random() * 1000000);
 }
 
+let fileManager = {
+  read: function() {
+  let rawData = fs.readFileSync('objectdata.json');
+  let goodData = JSON.parse(rawData);
+  serverGameArray = goodData;
+  },
+
+  write: function() {
+    let data = JSON.stringify(serverGameArray);
+    fs.writeFileSync('objectdata.json', data);
+  },
+
+  validData: function() {
+    let rawData = fs.readFileSync('objectdata.json');
+    if(rawData.length < 1) {
+      return false;
+    }
+    else {
+      return true;
+    }
+  }
+};
+
 // examples to be pushed
-serverGameArray.push(new gameObject("Granblue Fantasy", "Cygames", "2014", "This game is great!", "Role Playing"));
-serverGameArray.push(new gameObject("Donkey Kong", "Nintendo", "1981", "A classic!", "Misc."));
+if(!fileManager.validData()) {
+  serverGameArray.push(new gameObject("Granblue Fantasy", "Cygames", "2014", "This game is great!", "Role Playing"));
+  serverGameArray.push(new gameObject("Donkey Kong", "Nintendo", "1981", "A classic!", "Misc."));
+  fileManager.write();
+}
+else {
+  fileManager.read();
+}
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -25,6 +55,7 @@ router.get('/', function(req, res, next) {
 
 /* Get all games */
 router.get('/getAllGames', function(req, res) {
+  fileManager.read();
   res.status(200).json(serverGameArray);
 });
 
@@ -32,6 +63,7 @@ router.get('/getAllGames', function(req, res) {
 router.post('/addGame', function(req, res){
   const newReview = req.body;
   serverGameArray.push(newReview);
+  fileManager.write();
   res.status(200).json(newReview);
 });
 
@@ -47,6 +79,7 @@ router.delete('/DeleteGame/:ID', (req, res) => {
   }
   else {
     serverGameArray.splice(pointer, 1);
+    fileManager.write();
     res.send('Movie with ID: ' + delID + ' deleted!');
 }
 });
