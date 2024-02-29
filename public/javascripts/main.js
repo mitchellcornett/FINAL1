@@ -69,11 +69,14 @@ document.addEventListener("DOMContentLoaded", function (event) {
             url: "/DeleteGame/" +gameID,
             success: function(result){
                 alert(result);
+                document.location.href = "index.html#list"
             },
             error: function (xhr, textStatus, errorThrown) { 
                 alert("Server could not delete game with ID " + gameID)
             } 
         });
+
+        createList();
             
     });
 
